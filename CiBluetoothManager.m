@@ -242,8 +242,10 @@ static CiBluetoothManager *_shareInstance = nil;
 
     if (_isConnected == NO) {
         
-        _isConnected = YES;
+        _isConnected         = YES;
         _connectedPeripheral = peripheral;
+        
+        [_scanedPeripherals removeAllObjects];
         
         if (self.bluetoothConnectSuccess) {
             
@@ -295,9 +297,9 @@ static CiBluetoothManager *_shareInstance = nil;
     
     _connectedPeripheral     = nil;
     _connectedCharacteristic = nil;
-    _orderValue = @"";
-    _isConnected = NO;
-    
+    _orderValue              = @"";
+    _isConnected             = NO;
+
     if (self.bluetoothConnectFailed) {
         
         self.bluetoothConnectFailed(@"连接失败！");
@@ -422,13 +424,15 @@ static CiBluetoothManager *_shareInstance = nil;
     
     if (delay <= 0.0) {
         
+        [self connectTimeout];
+
         return;
     }
     
     //定时器
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        NSLog(@"-------延时执行--------");
+        NSLog(@"-------定时器结束--------");
         
         [self connectTimeout];
     });
